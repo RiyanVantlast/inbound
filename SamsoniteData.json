@@ -1,74 +1,13 @@
 {
-  "scannedData": [
-    {
-      "id": "mfdss1inemr4l",
-      "pallet": "000001",
-      "container": "B9201XYT",
-      "ean": "0",
-      "qty": "1",
-      "timestamp": "2025-09-10T09:49:03.023Z",
-      "user": "Riyan",
-      "date": "2025-09-10",
-      "version": 1
-    },
-    {
-      "id": "mfdss2w0itdwe",
-      "pallet": "000001",
-      "container": "B9201XYT",
-      "ean": "0",
-      "qty": "1",
-      "timestamp": "2025-09-10T09:49:04.800Z",
-      "user": "Riyan",
-      "date": "2025-09-10",
-      "version": 1
-    },
-    {
-      "id": "mfdss3dtuw9ph",
-      "pallet": "000001",
-      "container": "B9201XYT",
-      "ean": "0",
-      "qty": "1",
-      "timestamp": "2025-09-10T09:49:05.441Z",
-      "user": "Riyan",
-      "date": "2025-09-10",
-      "version": 1
-    },
-    {
-      "id": "mfdss3qs7ry6a",
-      "pallet": "000001",
-      "container": "B9201XYT",
-      "ean": "0",
-      "qty": "1",
-      "timestamp": "2025-09-10T09:49:05.908Z",
-      "user": "Riyan",
-      "date": "2025-09-10",
-      "version": 1
-    },
-    {
-      "id": "mfdss43fxvcwe",
-      "pallet": "000001",
-      "container": "B9201XYT",
-      "ean": "0",
-      "qty": "1",
-      "timestamp": "2025-09-10T09:49:06.363Z",
-      "user": "Riyan",
-      "date": "2025-09-10",
-      "version": 1
-    },
-    {
-      "id": "mfdss4gr934h2",
-      "pallet": "000001",
-      "container": "B9201XYT",
-      "ean": "0",
-      "qty": "1",
-      "timestamp": "2025-09-10T09:49:06.843Z",
-      "user": "Riyan",
-      "date": "2025-09-10",
-      "version": 1
-    }
-  ],
+  "scannedData": [],
   "deletedDataIds": [
-    "mfdsnea9rbr68"
+    "mfdsnea9rbr68",
+    "mfdss4gr934h2",
+    "mfdss43fxvcwe",
+    "mfdss3qs7ry6a",
+    "mfdss3dtuw9ph",
+    "mfdss2w0itdwe",
+    "mfdss1inemr4l"
   ],
-  "lastUpdated": "2025-09-10T10:02:00.592Z"
+  "lastUpdated": "2025-09-10T10:02:15.990Z"
 }
