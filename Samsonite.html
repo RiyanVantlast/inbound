@@ -2010,31 +2010,43 @@
             }
             
             // Fungsi untuk merge data lokal dan data dari GitHub
-            function mergeData(localData, remoteData) {
-                // Gabungkan kedua array data
-                const combinedData = [...localData, ...remoteData.scannedData || []];
-                
-                // Buat Map untuk menyimpan data unik berdasarkan ID
-                const dataMap = new Map();
-                
-                // Prioritaskan data dengan versi terbaru
-                combinedData.forEach(item => {
-                    if (!dataMap.has(item.id) || item.version > dataMap.get(item.id).version) {
-                        dataMap.set(item.id, item);
-                    }
-                });
-                
-                // Filter data yang tidak ada di daftar deleted
-                const finalData = Array.from(dataMap.values()).filter(item => 
-                    !remoteData.deletedDataIds.includes(item.id)
-                );
-                
-                return {
-                    scannedData: finalData,
-                    deletedDataIds: [...new Set([...deletedDataIds, ...remoteData.deletedDataIds || []])]
-                };
-            }
-            
+function mergeData(localData, remoteData) {
+    // Pastikan remoteData memiliki struktur yang benar
+    if (!remoteData || typeof remoteData !== 'object') {
+        remoteData = { scannedData: [], deletedDataIds: [] };
+    }
+    
+    if (!Array.isArray(remoteData.scannedData)) {
+        remoteData.scannedData = [];
+    }
+    
+    if (!Array.isArray(remoteData.deletedDataIds)) {
+        remoteData.deletedDataIds = [];
+    }
+
+    // Gabungkan kedua array data
+    const combinedData = [...localData.scannedData, ...remoteData.scannedData];
+    
+    // Buat Map untuk menyimpan data unik berdasarkan ID
+    const dataMap = new Map();
+    
+    // Prioritaskan data dengan versi terbaru
+    combinedData.forEach(item => {
+        if (!dataMap.has(item.id) || item.version > dataMap.get(item.id).version) {
+            dataMap.set(item.id, item);
+        }
+    });
+    
+    // Filter data yang tidak ada di daftar deleted
+    const finalData = Array.from(dataMap.values()).filter(item => 
+        !remoteData.deletedDataIds.includes(item.id)
+    );
+    
+    return {
+        scannedData: finalData,
+        deletedDataIds: [...new Set([...localData.deletedDataIds, ...remoteData.deletedDataIds])]
+    };
+}
             // Fungsi untuk push data ke GitHub
             async function pushToGithubForSync(dataToPush) {
                 if (!githubConfig.username || !githubConfig.repo || !githubConfig.token) {
@@ -2086,95 +2098,112 @@
                 }
             }
             
-            // Fungsi untuk pull data dari GitHub
-            async function pullFromGithubForSync() {
-                if (!githubConfig.username || !githubConfig.repo || !githubConfig.token) {
-                    throw new Error('GitHub configuration is incomplete');
-                }
-                
-                try {
-                    const fileUrl = `https://api.github.com/repos/${githubConfig.username}/${githubConfig.repo}/contents/${githubConfig.dataFilePath}`;
-                    const response = await fetch(fileUrl, {
-                        headers: {
-                            'Authorization': `token ${githubConfig.token}`,
-                            'Accept': 'application/vnd.github.v3+json'
-                        }
-                    });
-                    
-                    if (response.ok) {
-                        const fileInfo = await response.json();
-                        const content = decodeURIComponent(escape(atob(fileInfo.content)));
-                        return JSON.parse(content);
-                    } else {
-                        // Jika file tidak ditemukan, kembalikan objek kosong
-                        if (response.status === 404) {
-                            return { scannedData: [], deletedDataIds: [] };
-                        }
-                        
-                        const error = await response.json();
-                        throw new Error(error.message || 'Gagal pull data');
-                    }
-                } catch (error) {
-                    throw error;
-                }
+// Fungsi untuk pull data dari GitHub
+async function pullFromGithubForSync() {
+    if (!githubConfig.username || !githubConfig.repo || !githubConfig.token) {
+        throw new Error('GitHub configuration is incomplete');
+    }
+    
+    try {
+        const fileUrl = `https://api.github.com/repos/${githubConfig.username}/${githubConfig.repo}/contents/${githubConfig.dataFilePath}`;
+        const response = await fetch(fileUrl, {
+            headers: {
+                'Authorization': `token ${githubConfig.token}`,
+                'Accept': 'application/vnd.github.v3+json'
             }
+        });
+        
+        if (response.ok) {
+            const fileInfo = await response.json();
+            const content = decodeURIComponent(escape(atob(fileInfo.content)));
+            const parsedData = JSON.parse(content);
+            
+            // Pastikan data yang diterima memiliki struktur yang benar
+            return {
+                scannedData: Array.isArray(parsedData.scannedData) ? parsedData.scannedData : [],
+                deletedDataIds: Array.isArray(parsedData.deletedDataIds) ? parsedData.deletedDataIds : [],
+                lastUpdated: parsedData.lastUpdated || new Date().toISOString()
+            };
+        } else {
+            // Jika file tidak ditemukan, kembalikan objek kosong dengan struktur yang benar
+            if (response.status === 404) {
+                return { scannedData: [], deletedDataIds: [], lastUpdated: new Date().toISOString() };
+            }
+            
+            const error = await response.json();
+            throw new Error(error.message || 'Gagal pull data');
+        }
+    } catch (error) {
+        console.error('Error pulling data:', error);
+        // Kembalikan objek kosong dengan struktur yang benar jika terjadi error
+        return { scannedData: [], deletedDataIds: [], lastUpdated: new Date().toISOString() };
+    }
+}
             
             // Fungsi untuk melakukan sinkronisasi data (push lalu pull)
-            async function performSync() {
-                if (isSyncing) {
-                    console.log('Sync already in progress');
-                    return;
-                }
-                
-                if (!githubConfig.username || !githubConfig.repo || !githubConfig.token) {
-                    showNotification('Harap konfigurasi GitHub terlebih dahulu!', 'error');
-                    return;
-                }
-                
-                isSyncing = true;
-                updatePushStatus('active', 'Syncing...');
-                
-                try {
-                    // 1. Siapkan data untuk dikirim ke GitHub
-                    const dataToPush = {
-                        scannedData: scannedData,
-                        deletedDataIds: deletedDataIds,
-                        lastUpdated: new Date().toISOString()
-                    };
-                    
-                    // 2. Push data ke GitHub
-                    await pushToGithubForSync(dataToPush);
-                    
-                    // 3. Pull data dari GitHub untuk mendapatkan data terbaru
-                    const remoteData = await pullFromGithubForSync();
-                    
-                    // 4. Merge data lokal dan data dari GitHub
-                    const mergedData = mergeData({ scannedData, deletedDataIds }, remoteData);
-                    
-                    // 5. Simpan data yang sudah di-merge ke local storage
-                    scannedData = mergedData.scannedData;
-                    deletedDataIds = mergedData.deletedDataIds;
-                    saveToLocalStorage();
-                    
-                    // 6. Update UI
-                    renderTable();
-                    updateTotalEan();
-                    updateTotalContainer();
-                    populateFilterDropdowns();
-                    
-                    showNotification('Sinkronisasi berhasil!');
-                    updatePushStatus('idle', 'Sync berhasil');
-                    lastSyncTimestamp = Date.now();
-                    updateLastSyncTime();
-                } catch (error) {
-                    console.error('Error during sync:', error);
-                    showNotification('Sinkronisasi gagal: ' + error.message, 'error');
-                    updatePushStatus('error', 'Sync gagal');
-                } finally {
-                    isSyncing = false;
-                }
-            }
-            
+async function performSync() {
+    if (isSyncing) {
+        console.log('Sync already in progress');
+        return;
+    }
+    
+    if (!githubConfig.username || !githubConfig.repo || !githubConfig.token) {
+        showNotification('Harap konfigurasi GitHub terlebih dahulu!', 'error');
+        return;
+    }
+    
+    isSyncing = true;
+    updatePushStatus('active', 'Syncing...');
+    
+    try {
+        // 1. Siapkan data untuk dikirim ke GitHub
+        const dataToPush = {
+            scannedData: scannedData,
+            deletedDataIds: deletedDataIds,
+            lastUpdated: new Date().toISOString()
+        };
+        
+        // 2. Push data ke GitHub
+        await pushToGithubForSync(dataToPush);
+        
+        // 3. Pull data dari GitHub untuk mendapatkan data terbaru
+        const remoteData = await pullFromGithubForSync();
+        
+        // 4. Pastikan remoteData memiliki struktur yang benar
+        const validatedRemoteData = {
+            scannedData: Array.isArray(remoteData?.scannedData) ? remoteData.scannedData : [],
+            deletedDataIds: Array.isArray(remoteData?.deletedDataIds) ? remoteData.deletedDataIds : []
+        };
+        
+        // 5. Merge data lokal dan data dari GitHub
+        const mergedData = mergeData(
+            { scannedData, deletedDataIds }, 
+            validatedRemoteData
+        );
+        
+        // 6. Simpan data yang sudah di-merge ke local storage
+        scannedData = mergedData.scannedData;
+        deletedDataIds = mergedData.deletedDataIds;
+        saveToLocalStorage();
+        
+        // 7. Update UI
+        renderTable();
+        updateTotalEan();
+        updateTotalContainer();
+        populateFilterDropdowns();
+        
+        showNotification('Sinkronisasi berhasil!');
+        updatePushStatus('idle', 'Sync berhasil');
+        lastSyncTimestamp = Date.now();
+        updateLastSyncTime();
+    } catch (error) {
+        console.error('Error during sync:', error);
+        showNotification('Sinkronisasi gagal: ' + error.message, 'error');
+        updatePushStatus('error', 'Sync gagal');
+    } finally {
+        isSyncing = false;
+    }
+}
             // Fungsi untuk push data ke GitHub (manual)
             async function pushToGithub() {
                 await performSync();
