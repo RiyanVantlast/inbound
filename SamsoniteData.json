@@ -1,5 +1,116 @@
 {
-  "scannedData": [],
+  "scannedData": [
+    {
+      "id": "mfdtny6z454d2",
+      "pallet": "000001",
+      "container": "B9201XYT",
+      "ean": "0",
+      "qty": "1",
+      "timestamp": "2025-09-10T10:13:51.706Z",
+      "user": "admin",
+      "date": "2025-09-10",
+      "version": 1
+    },
+    {
+      "id": "mfdtnylz8axe6",
+      "pallet": "000001",
+      "container": "B9201XYT",
+      "ean": "0",
+      "qty": "1",
+      "timestamp": "2025-09-10T10:13:52.247Z",
+      "user": "admin",
+      "date": "2025-09-10",
+      "version": 1
+    },
+    {
+      "id": "mfdtnz03r2o9w",
+      "pallet": "000001",
+      "container": "B9201XYT",
+      "ean": "0",
+      "qty": "1",
+      "timestamp": "2025-09-10T10:13:52.755Z",
+      "user": "admin",
+      "date": "2025-09-10",
+      "version": 1
+    },
+    {
+      "id": "mfdtnzdxj5o2e",
+      "pallet": "000001",
+      "container": "B9201XYT",
+      "ean": "0",
+      "qty": "1",
+      "timestamp": "2025-09-10T10:13:53.253Z",
+      "user": "admin",
+      "date": "2025-09-10",
+      "version": 1
+    },
+    {
+      "id": "mfdtnzrcrx2h8",
+      "pallet": "000001",
+      "container": "B9201XYT",
+      "ean": "0",
+      "qty": "1",
+      "timestamp": "2025-09-10T10:13:53.736Z",
+      "user": "admin",
+      "date": "2025-09-10",
+      "version": 1
+    },
+    {
+      "id": "mfdto049mxxkv",
+      "pallet": "000001",
+      "container": "B9201XYT",
+      "ean": "0",
+      "qty": "1",
+      "timestamp": "2025-09-10T10:13:54.201Z",
+      "user": "admin",
+      "date": "2025-09-10",
+      "version": 1
+    },
+    {
+      "id": "mfdto0h26gyjs",
+      "pallet": "000001",
+      "container": "B9201XYT",
+      "ean": "0",
+      "qty": "1",
+      "timestamp": "2025-09-10T10:13:54.662Z",
+      "user": "admin",
+      "date": "2025-09-10",
+      "version": 1
+    },
+    {
+      "id": "mfdto0u6z1e1a",
+      "pallet": "000001",
+      "container": "B9201XYT",
+      "ean": "0",
+      "qty": "1",
+      "timestamp": "2025-09-10T10:13:55.134Z",
+      "user": "admin",
+      "date": "2025-09-10",
+      "version": 1
+    },
+    {
+      "id": "mfdto17ie5wso",
+      "pallet": "000001",
+      "container": "B9201XYT",
+      "ean": "0",
+      "qty": "1",
+      "timestamp": "2025-09-10T10:13:55.614Z",
+      "user": "admin",
+      "date": "2025-09-10",
+      "version": 1
+    },
+    {
+      "id": "mfdto1j75xww0",
+      "pallet": "000001",
+      "container": "B9201XYT",
+      "ean": "0",
+      "qty": "1",
+      "timestamp": "2025-09-10T10:13:56.035Z",
+      "user": "admin",
+      "date": "2025-09-10",
+      "version": 1
+    }
+  ],
   "deletedDataIds": [
     "mfdsnea9rbr68",
     "mfdss4gr934h2",
@@ -9,5 +120,5 @@
     "mfdss2w0itdwe",
     "mfdss1inemr4l"
   ],
-  "lastUpdated": "2025-09-10T10:02:15.990Z"
+  "lastUpdated": "2025-09-10T10:13:58.358Z"
 }
