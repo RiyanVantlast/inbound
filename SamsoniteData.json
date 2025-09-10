@@ -318,6 +318,17 @@
       "user": "admin",
       "date": "2025-09-10",
       "version": 1
+    },
+    {
+      "id": "mfdtp06g2oq7f",
+      "pallet": "000003",
+      "container": "B9201XYT",
+      "ean": "1",
+      "qty": "1",
+      "timestamp": "2025-09-10T10:14:40.936Z",
+      "user": "admin",
+      "date": "2025-09-10",
+      "version": 1
     }
   ],
   "deletedDataIds": [
@@ -329,5 +340,5 @@
     "mfdss2w0itdwe",
     "mfdss1inemr4l"
   ],
-  "lastUpdated": "2025-09-10T10:14:40.522Z"
+  "lastUpdated": "2025-09-10T10:15:41.276Z"
 }
